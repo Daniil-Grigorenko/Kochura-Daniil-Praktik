@@ -1,0 +1,43 @@
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
+
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const { addToast } = useToast();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login({ email, role: email.includes('admin') ? 'organizer' : 'student' });
+    addToast('Успешный вход!', 'success');
+    navigate('/dashboard');
+  };
+
+  return (
+    <div className="container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+      <div className="bento-item" style={{ width: '100%', maxWidth: '400px' }}>
+        <h1 className="h2 mb-8" style={{ textAlign: 'center' }}>Вход</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label className="form-label">Email</label>
+            <input type="email" required className="form-control" value={email} onChange={e => setEmail(e.target.value)} placeholder="student@college.ru" />
+          </div>
+          <div className="form-group mb-8">
+            <label className="form-label">Пароль</label>
+            <input type="password" required className="form-control" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" />
+          </div>
+          <button type="submit" className="btn btn-primary btn-block">Войти</button>
+        </form>
+        <p className="text-small mt-4" style={{ textAlign: 'center' }}>
+          Нет аккаунта? <Link to="/register" style={{ color: 'var(--brand-color)' }}>Зарегистрироваться</Link>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export default LoginPage;
